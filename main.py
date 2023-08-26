@@ -1,56 +1,57 @@
+# Importing necessary libraries
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
+import openpyxl
 
-import  openpyxl
-
-
-response =requests.get("https://www.rogerebert.com/reviews")
+# Sending a GET request to a URL
+response = requests.get("https://www.rogerebert.com/reviews")
 contents = response.text
+
+# Parsing the HTML content using BeautifulSoup
 soup = BeautifulSoup(contents, 'html.parser')
 
-movies = soup.find_all(name="div" , class_="review-stack--info")
-page_source='https://www.rogerebert.com'
-movies_name=[]
-movies_link=[]
-author_name=[]
-rate=[]
-# print(movies)
+# Extracting movie information
+movies = soup.find_all(name="div", class_="review-stack--info")
+page_source = 'https://www.rogerebert.com'
+movies_name = []
+movies_link = []
+author_name = []
+rate = []
+
+# Looping through the movies to extract data
 for movie in movies:
+    # Extracting movie names
     movies_name.append(((movie.find(name="h5", class_="review-stack--title").getText()).lstrip('\n')).rstrip('\n'))
+    
 for movie in movies:
-    author_name.append((((movie.find(name="h6" , class_="review-stack--byline")).getText()).lstrip('\n')).rstrip('\n'))
+    # Extracting author names
+    author_name.append((((movie.find(name="h6", class_="review-stack--byline")).getText()).lstrip('\n')).rstrip('\n'))
+
 for movie in movies:
-    rate.append(len(movie.find_all(name="i" , class_="icon-star-full")))
-for movie in movies :
-    movies_link.append(page_source +((movie.find(name="a")).get("href")) )
+    # Extracting ratings
+    rate.append(len(movie.find_all(name="i", class_="icon-star-full")))
 
-# print(movies_name)
-# print(movies_link)
-# print(author_name)
-# print(rate)
+for movie in movies:
+    # Extracting movie links
+    movies_link.append(page_source + ((movie.find(name="a")).get("href")))
 
-# max = 0
-# max_index=0
-# for r in  range(0,len(rate)):
-#     if (rate[r] > max):
-#         max=rate[r]
-#         max_index=r
-#
-# print(max , max_index)
-# print(movies_name[max_index])
-# print(author_name[max_index])
-
-
-movies_data={
- "name" : movies_name ,
- "author" : author_name ,
-"rate/5" : rate,
-"review link ": movies_link
-
+# Creating a dictionary to store movie data
+movies_data = {
+    "name": movies_name,
+    "author": author_name,
+    "rate/5": rate,
+    "review link": movies_link
 }
-data_set= pd.DataFrame(movies_data)
-# data_set.to_csv("movie_data_set", sep=',', index=False, encoding='utf-8')
-# read_file = pd.read_csv (r'C:\Users\User\Desktop\beauitfulSoup\movie_data_set')
-# read_file.to_excel (r'C:\Users\User\Desktop\beauitfulSoup\dataset.xlsx', index = None, header=True)
+
+# Creating a Pandas DataFrame from the collected data
+data_set = pd.DataFrame(movies_data)
+
+# Printing the DataFrame
 print(data_set)
+
+# Note: Some lines related to CSV and Excel export are commented out.
+# Uncomment them if you want to export the data to CSV or Excel.
+# data_set.to_csv("movie_data_set.csv", sep=',', index=False, encoding='utf-8')
+# read_file = pd.read_csv('movie_data_set.csv')
+# read_file.to_excel('dataset.xlsx', index=None, header=True)
