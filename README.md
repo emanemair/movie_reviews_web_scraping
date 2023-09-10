@@ -8,5 +8,4 @@ Before running this script, ensure that you have the following Python libraries 
 1. bs4 (Beautiful Soup): For parsing HTML content.
 2. pandas: For creating and manipulating data frames.
 3. requests: For sending HTTP GET requests.
-4. openpyxl: For exporting data to an Excel file (optional).
-
+4. openpyxl: For exporting data to an Excel file 
